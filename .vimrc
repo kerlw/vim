@@ -133,8 +133,8 @@ func SetTitle()
 	else 
 		call setline(1, "/*************************************************************************") 
 		call append(line("."), "	> File Name: ".expand("%")) 
-		call append(line(".")+1, "	> Author: ") 
-		call append(line(".")+2, "	> Mail: ") 
+		call append(line(".")+1, "	> Author: WuKe") 
+		call append(line(".")+2, "	> Mail: wuke@ucweb.com") 
 		call append(line(".")+3, "	> Created Time: ".strftime("%c")) 
 		call append(line(".")+4, " ************************************************************************/") 
 		call append(line(".")+5, "")
@@ -174,6 +174,18 @@ map! <C-O> <C-Y>,
 map <C-A> ggVG$"+y
 map <F12> gg=G
 map <C-w> <C-w>w
+"hex mode switch 十六进制查看方式切换
+map <C-H> :call  ToggleHexMod()<CR>
+func! ToggleHexMod()
+    if !exists("s:hexmode") || s:hexmode == 0
+        exec "%!xxd"
+        let s:hexmode = 1
+    else
+        exec "%!xxd -r"
+            let s:hexmode = 0
+    endif
+endfunc
+
 imap <C-k> <C-y>,
 imap <C-t> <C-q><TAB>
 imap <C-j> <ESC>
@@ -202,11 +214,13 @@ map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
 	exec "w"
 	if &filetype == 'c'
-		exec "!g++ % -o %<"
+		exec "!gcc % -o %<"
 		exec "!time ./%<"
+        exec "!rm %<"
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
 		exec "!time ./%<"
+        exec "!rm %<"
 	elseif &filetype == 'java' 
 		exec "!javac %" 
 		exec "!time java %<"
